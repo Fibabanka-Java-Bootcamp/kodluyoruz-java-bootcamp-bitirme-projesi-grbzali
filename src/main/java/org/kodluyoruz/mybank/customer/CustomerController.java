@@ -38,8 +38,7 @@ public class CustomerController {
 
     @GetMapping("/{id}")
     public CustomerDto getAll(@PathVariable("id") long id){
-        return customerService.get(id).
-                orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found with id : " + id)).toCustomerDto();
+        return customerService.get(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found with id : " + id)).toCustomerDto();
     }
-
 }
+
