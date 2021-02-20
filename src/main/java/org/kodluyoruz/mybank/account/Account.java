@@ -1,9 +1,23 @@
 package org.kodluyoruz.mybank.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.kodluyoruz.mybank.customer.Customer;
+import org.kodluyoruz.mybank.enums.AccountType;
+import org.kodluyoruz.mybank.enums.CurrencyCode;
+
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
+
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "accounts")
 @Entity
 public class Account {
 
@@ -11,19 +25,38 @@ public class Account {
     @GeneratedValue
     private long id;
 
-    private String iban;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int iban;
 
-    private String currency_code;
-    //TODO: Kartid relations
-    //private Card card;
-    private double usableLimit;
-    private boolean activeStatus;
-    private String BranchCode;
-    //private dateTime CreatedDate;
-    //private enum accountType; // Vadesiz Mevduat hesabı, Birikim Hesabı
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    @JsonIgnore
     private Customer customer;
 
+    private double usableLimit;
+    @Column(columnDefinition="Decimal(10,2) default '0.00'")
+    private double balance;
 
+    @Enumerated(EnumType.STRING)
+    private CurrencyCode currencyCode;
+
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
+
+    @JsonIgnore
+    private boolean isDeleted;
+
+    private LocalDateTime createdAt;
+
+
+    //TODO: Kartid relation
+    //private Card card;
+
+    public AccountDto toAccountDto() {
+        return AccountDto.builder()
+                .currencyCode(this.currencyCode)
+                .usableLimit(this.usableLimit)
+                .accountType(this.accountType)
+                .build();
+    }
 }
