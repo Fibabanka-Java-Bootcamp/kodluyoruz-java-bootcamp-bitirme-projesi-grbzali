@@ -25,7 +25,6 @@ public class Account {
     @GeneratedValue
     private long id;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int iban;
 
     @ManyToOne

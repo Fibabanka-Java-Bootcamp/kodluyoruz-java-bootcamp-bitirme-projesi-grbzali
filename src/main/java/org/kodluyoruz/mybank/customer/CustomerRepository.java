@@ -14,8 +14,6 @@ import java.util.List;
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
 
-    List<Customer> findAllByName(String name);
-
     @Query("select c FROM Customer c WHERE c.isDeleted = false")
     Page<Customer> findAll(Pageable page);
 
