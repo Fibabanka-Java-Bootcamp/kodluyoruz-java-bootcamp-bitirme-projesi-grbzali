@@ -2,16 +2,14 @@ package org.kodluyoruz.mybank.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.kodluyoruz.mybank.card.Card;
+import org.kodluyoruz.mybank.config.Auditable;
+
 import org.kodluyoruz.mybank.customer.Customer;
-import org.kodluyoruz.mybank.enums.AccountType;
-import org.kodluyoruz.mybank.enums.CurrencyCode;
-
-
+import org.kodluyoruz.mybank.transfer.Transfer;
 import javax.persistence.*;
+import java.util.List;
 
-import java.time.LocalDateTime;
-
-@Data
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,22 +17,30 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "accounts")
 @Entity
-public class Account {
+public class Account extends Auditable<String> {
 
     @Id
     @GeneratedValue
     private long id;
 
-    private int iban;
+    private String iban;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
-    private double usableLimit;
+
     @Column(columnDefinition="Decimal(10,2) default '0.00'")
     private double balance;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "toAccount")
+    private List<Transfer> toTransfer;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "fromAccount")
+    private List<Transfer> fromTransfer;
 
     @Enumerated(EnumType.STRING)
     private CurrencyCode currencyCode;
@@ -42,20 +48,23 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
+    @OneToOne(mappedBy = "account",cascade = CascadeType.PERSIST)
+    @JoinColumn
+    private Card card;
+
     @JsonIgnore
     private boolean isDeleted;
 
-    private LocalDateTime createdAt;
-
-
-    //TODO: Kartid relation
-    //private Card card;
-
     public AccountDto toAccountDto() {
         return AccountDto.builder()
+                .id(this.id)
                 .currencyCode(this.currencyCode)
-                .usableLimit(this.usableLimit)
                 .accountType(this.accountType)
+                .balance(this.balance)
+                .customer(this.customer)
+                .iban(this.iban)
+                .card(this.card)
+
                 .build();
     }
 }

@@ -2,9 +2,8 @@ package org.kodluyoruz.mybank.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.kodluyoruz.mybank.card.Card;
 import org.kodluyoruz.mybank.customer.Customer;
-import org.kodluyoruz.mybank.enums.AccountType;
-import org.kodluyoruz.mybank.enums.CurrencyCode;
 
 @Builder
 @Getter
@@ -13,20 +12,27 @@ import org.kodluyoruz.mybank.enums.CurrencyCode;
 @AllArgsConstructor
 public class AccountDto {
 
+    private long id;
     private CurrencyCode currencyCode;
     private AccountType accountType;
-    private double usableLimit;
+    private String iban;
+    private double balance;
 
     @JsonIgnore
     private Customer customer;
 
+    private Card card;
+
+
     public Account toAccount() {
         return Account.builder()
+                .id(this.id)
                 .currencyCode(this.currencyCode)
                 .accountType(this.accountType)
-                .usableLimit(this.usableLimit)
                 .customer(this.customer)
-
+                .balance(this.balance)
+                .iban(this.iban)
+                .card(this.card)
                 .build();
     }
 

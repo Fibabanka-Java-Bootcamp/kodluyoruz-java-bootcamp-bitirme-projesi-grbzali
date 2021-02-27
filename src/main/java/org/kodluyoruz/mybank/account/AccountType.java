@@ -1,4 +1,4 @@
-package org.kodluyoruz.mybank.enums;
+package org.kodluyoruz.mybank.account;
 
 public enum AccountType {
     SAVINGS,

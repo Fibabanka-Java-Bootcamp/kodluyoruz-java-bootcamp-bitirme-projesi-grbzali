@@ -3,48 +3,36 @@ package org.kodluyoruz.mybank.card;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.kodluyoruz.mybank.account.Account;
-import org.kodluyoruz.mybank.config.Auditable;
 import org.kodluyoruz.mybank.customer.Customer;
-import javax.persistence.*;
+
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "cards")
-public class Card extends Auditable<String> {
+public class CardDto {
 
-    @Id
-    @GeneratedValue
     private long id;
-
     private String cardNo;
-
-    @Enumerated(EnumType.STRING)
     private CardType cardType;
-
-    private double usableLimit;
-
-    @OneToOne
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
     @JsonIgnore
     private Account account;
-
-    @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     @JsonIgnore
     private Customer customer;
+    private double usableLimit;
 
-    public CardDto toCardDto() {
-        return CardDto.builder()
+    public Card toCard() {
+        return Card.builder()
                 .id(this.id)
                 .cardNo(this.cardNo)
-                .cardType(this.cardType)
                 .account(this.account)
+                .cardType(this.cardType)
                 .customer(this.customer)
+                .usableLimit(this.usableLimit)
+
                 .build();
     }
-
 }

@@ -41,9 +41,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>nl.garvelink.oss</groupId>
-            <artifactId>iban</artifactId>
-            <version>1.8.0</version>
+            <groupId>org.iban4j</groupId>
+            <artifactId>iban4j</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
